@@ -31,7 +31,7 @@ function App() {
   }
 
   if (currentPage === 'signup') {
-    return <SignupPage onBack={handleBackToHome} />;
+    return <SignupPage onBack={handleBackToHome} onLogin={handleLogin} />;
   }
 
   if (currentPage === 'dashboard') {

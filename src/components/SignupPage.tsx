@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 interface SignupPageProps {
   onBack: () => void;
+  onLogin: () => void;
 }
 
 function SignupPage({ onBack }: SignupPageProps) {
@@ -111,7 +112,14 @@ function SignupPage({ onBack }: SignupPageProps) {
             <div className="text-center pt-4">
               <p className="text-gray-600">
                 Already have an account?{' '}
-                <a href="#" className="text-light-blue-600 hover:text-light-blue-700 font-medium transition-colors duration-200">
+                <a 
+                  href="#" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onLogin();
+                  }}
+                  className="text-light-blue-600 hover:text-light-blue-700 font-medium transition-colors duration-200"
+                >
                   Login here
                 </a>
               </p>
