@@ -1,8 +1,11 @@
 import React from 'react';
+import LoginPage from './components/LoginPage';
 
 function App() {
+  const [currentPage, setCurrentPage] = React.useState<'home' | 'login'>('home');
+
   const handleLogin = () => {
-    console.log('Login clicked');
+    setCurrentPage('login');
   };
 
   const handleSignup = () => {
@@ -12,6 +15,14 @@ function App() {
   const handleDashboard = () => {
     console.log('Go to Dashboard clicked');
   };
+
+  const handleBackToHome = () => {
+    setCurrentPage('home');
+  };
+
+  if (currentPage === 'login') {
+    return <LoginPage onBack={handleBackToHome} />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-light-blue-50 via-light-blue-100 to-white flex items-center justify-center px-4 sm:px-6 lg:px-8">
