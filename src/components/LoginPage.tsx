@@ -1,17 +1,31 @@
 import React, { useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
 
 interface LoginPageProps {
   onBack: () => void;
+  onSuccess: () => void;
 }
 
-function LoginPage({ onBack }: LoginPageProps) {
+function LoginPage({ onBack, onSuccess }: LoginPageProps) {
+  const { signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login attempt:', { email, password });
-    // Handle login logic here
+    setLoading(true);
+    setError(null);
+
+    const { error } = await signIn(email, password);
+    
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    } else {
+      onSuccess();
+    }
   };
 
   return (
@@ -42,6 +56,13 @@ function LoginPage({ onBack }: LoginPageProps) {
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                <p className="text-red-600 text-sm font-medium">{error}</p>
+              </div>
+            )}
+
             {/* Email Field */}
             <div>
               <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
@@ -57,6 +78,7 @@ function LoginPage({ onBack }: LoginPageProps) {
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-light-blue-200 focus:border-light-blue-500 transition-all duration-200 text-lg"
                 placeholder="Enter your email"
+                disabled={loading}
               />
             </div>
 
@@ -75,6 +97,7 @@ function LoginPage({ onBack }: LoginPageProps) {
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-light-blue-200 focus:border-light-blue-500 transition-all duration-200 text-lg"
                 placeholder="Enter your password"
+                disabled={loading}
               />
             </div>
 
@@ -82,9 +105,17 @@ function LoginPage({ onBack }: LoginPageProps) {
             <div className="pt-4">
               <button
                 type="submit"
-                className="w-full px-6 py-4 bg-light-blue-600 hover:bg-light-blue-700 text-white font-semibold text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-light-blue-200 focus:ring-opacity-50"
+                disabled={loading}
+                className="w-full px-6 py-4 bg-light-blue-600 hover:bg-light-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 disabled:transform-none transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-light-blue-200 focus:ring-opacity-50"
               >
-                Login
+                {loading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    Signing in...
+                  </div>
+                ) : (
+                  'Login'
+                )}
               </button>
             </div>
 

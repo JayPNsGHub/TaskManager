@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { User } from '@supabase/supabase-js';
 
 interface DashboardProps {
   onLogout: () => void;
+  user: User | null;
 }
 
-function Dashboard({ onLogout }: DashboardProps) {
+function Dashboard({ onLogout, user }: DashboardProps) {
   const [tasks, setTasks] = useState([
     'Finish homework',
     'Call John',
@@ -28,8 +30,9 @@ function Dashboard({ onLogout }: DashboardProps) {
           {/* Heading */}
           <div className="text-center mb-8">
             <h1 className="text-4xl sm:text-5xl font-bold text-gray-800 tracking-tight">
-              Your Tasks
+              Welcome, {user?.user_metadata?.full_name || user?.email}!
             </h1>
+            <p className="text-lg text-gray-600 mt-2">Here are your tasks</p>
           </div>
 
           {/* Task List */}

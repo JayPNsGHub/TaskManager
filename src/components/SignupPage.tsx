@@ -1,19 +1,39 @@
 import React, { useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
 
 interface SignupPageProps {
   onBack: () => void;
   onLogin: () => void;
+  onSuccess: () => void;
 }
 
-function SignupPage({ onBack }: SignupPageProps) {
+function SignupPage({ onBack, onLogin, onSuccess }: SignupPageProps) {
+  const { signUp } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Signup attempt:', { name, email, password });
-    // Handle signup logic here
+    setLoading(true);
+    setError(null);
+
+    const { error } = await signUp(email, password, name);
+    
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    } else {
+      setSuccess(true);
+      setLoading(false);
+      // Auto-redirect to dashboard after successful signup
+      setTimeout(() => {
+        onSuccess();
+      }, 2000);
+    }
   };
 
   return (
@@ -44,6 +64,22 @@ function SignupPage({ onBack }: SignupPageProps) {
 
           {/* Signup Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Success Message */}
+            {success && (
+              <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                <p className="text-green-600 text-sm font-medium">
+                  Account created successfully! Redirecting to dashboard...
+                </p>
+              </div>
+            )}
+
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                <p className="text-red-600 text-sm font-medium">{error}</p>
+              </div>
+            )}
+
             {/* Name Field */}
             <div>
               <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
@@ -59,6 +95,7 @@ function SignupPage({ onBack }: SignupPageProps) {
                 onChange={(e) => setName(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-light-blue-200 focus:border-light-blue-500 transition-all duration-200 text-lg"
                 placeholder="Enter your full name"
+                disabled={loading || success}
               />
             </div>
 
@@ -77,6 +114,7 @@ function SignupPage({ onBack }: SignupPageProps) {
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-light-blue-200 focus:border-light-blue-500 transition-all duration-200 text-lg"
                 placeholder="Enter your email"
+                disabled={loading || success}
               />
             </div>
 
@@ -95,6 +133,7 @@ function SignupPage({ onBack }: SignupPageProps) {
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-light-blue-200 focus:border-light-blue-500 transition-all duration-200 text-lg"
                 placeholder="Create a password"
+                disabled={loading || success}
               />
             </div>
 
@@ -102,9 +141,19 @@ function SignupPage({ onBack }: SignupPageProps) {
             <div className="pt-4">
               <button
                 type="submit"
-                className="w-full px-6 py-4 bg-light-blue-600 hover:bg-light-blue-700 text-white font-semibold text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-light-blue-200 focus:ring-opacity-50"
+                disabled={loading || success}
+                className="w-full px-6 py-4 bg-light-blue-600 hover:bg-light-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold text-lg rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 disabled:transform-none transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-light-blue-200 focus:ring-opacity-50"
               >
-                Signup
+                {loading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    Creating account...
+                  </div>
+                ) : success ? (
+                  'Account created!'
+                ) : (
+                  'Signup'
+                )}
               </button>
             </div>
 
