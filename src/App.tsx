@@ -1,15 +1,16 @@
 import React from 'react';
 import LoginPage from './components/LoginPage';
+import SignupPage from './components/SignupPage';
 
 function App() {
-  const [currentPage, setCurrentPage] = React.useState<'home' | 'login'>('home');
+  const [currentPage, setCurrentPage] = React.useState<'home' | 'login' | 'signup'>('home');
 
   const handleLogin = () => {
     setCurrentPage('login');
   };
 
   const handleSignup = () => {
-    console.log('Signup clicked');
+    setCurrentPage('signup');
   };
 
   const handleDashboard = () => {
@@ -22,6 +23,10 @@ function App() {
 
   if (currentPage === 'login') {
     return <LoginPage onBack={handleBackToHome} />;
+  }
+
+  if (currentPage === 'signup') {
+    return <SignupPage onBack={handleBackToHome} />;
   }
 
   return (
