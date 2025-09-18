@@ -40,6 +40,11 @@ function App() {
     return <Dashboard onLogout={handleLogout} user={user} />;
   }
 
+  // If user is authenticated and on home page, redirect to dashboard
+  if (user && currentPage === 'home') {
+    return <Dashboard onLogout={handleLogout} user={user} />;
+  }
+
   if (currentPage === 'login') {
     return <LoginPage onBack={handleBackToHome} onSuccess={handleDashboard} />;
   }

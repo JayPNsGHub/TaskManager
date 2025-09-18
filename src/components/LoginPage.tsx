@@ -121,9 +121,12 @@ function LoginPage({ onBack, onSuccess }: LoginPageProps) {
 
             {/* Additional Links */}
             <div className="text-center pt-4 space-y-2">
-              <a href="#" className="text-light-blue-600 hover:text-light-blue-700 font-medium transition-colors duration-200">
+              <button 
+                onClick={onBack}
+                className="text-light-blue-600 hover:text-light-blue-700 font-medium transition-colors duration-200"
+              >
                 Forgot your password?
-              </a>
+              </button>
               <p className="text-gray-600">
                 Don't have an account?{' '}
                 <a href="#" className="text-light-blue-600 hover:text-light-blue-700 font-medium transition-colors duration-200">
