@@ -4,9 +4,9 @@ import { useAuth } from '../hooks/useAuth';
 interface LoginPageProps {
   onBack: () => void;
   onSuccess: () => void;
+  onSignup?: () => void;
 }
 
-function LoginPage({ onBack, onSuccess }: LoginPageProps) {
   const { signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -129,9 +129,12 @@ function LoginPage({ onBack, onSuccess }: LoginPageProps) {
               </button>
               <p className="text-gray-600">
                 Don't have an account?{' '}
-                <a href="#" className="text-light-blue-600 hover:text-light-blue-700 font-medium transition-colors duration-200">
+                <button 
+                  onClick={() => window.location.href = '#signup'}
+                  className="text-light-blue-600 hover:text-light-blue-700 font-medium transition-colors duration-200 underline"
+                >
                   Sign up here
-                </a>
+                </button>
               </p>
             </div>
           </form>
