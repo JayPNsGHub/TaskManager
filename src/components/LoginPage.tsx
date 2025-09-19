@@ -129,9 +129,9 @@ interface LoginPageProps {
               </button>
               <p className="text-gray-600">
                 Don't have an account?{' '}
-                <button 
-                  onClick={() => window.location.href = '#signup'}
-                  className="text-light-blue-600 hover:text-light-blue-700 font-medium transition-colors duration-200 underline"
+                <button
+                  onClick={onSignup}
+                  className="text-light-blue-600 hover:text-light-blue-700 font-medium transition-colors duration-200 underline bg-transparent border-none cursor-pointer"
                 >
                   Sign up here
                 </button>

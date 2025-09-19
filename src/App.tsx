@@ -46,7 +46,7 @@ function App() {
   }
 
   if (currentPage === 'login') {
-    return <LoginPage onBack={handleBackToHome} onSuccess={handleDashboard} />;
+    return <LoginPage onBack={handleBackToHome} onSuccess={handleDashboard} onSignup={handleSignup} />;
   }
 
   if (currentPage === 'signup') {
