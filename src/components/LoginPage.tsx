@@ -7,6 +7,7 @@ interface LoginPageProps {
   onSignup?: () => void;
 }
 
+const LoginPage: React.FC<LoginPageProps> = ({ onBack, onSuccess, onSignup }) => {
   const { signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -129,9 +130,9 @@ interface LoginPageProps {
               </button>
               <p className="text-gray-600">
                 Don't have an account?{' '}
-                <button
-                  onClick={onSignup}
-                  className="text-light-blue-600 hover:text-light-blue-700 font-medium transition-colors duration-200 underline bg-transparent border-none cursor-pointer"
+                <button 
+                  onClick={() => window.location.href = '#signup'}
+                  className="text-light-blue-600 hover:text-light-blue-700 font-medium transition-colors duration-200 underline"
                 >
                   Sign up here
                 </button>
