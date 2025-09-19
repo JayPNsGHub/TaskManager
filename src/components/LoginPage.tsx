@@ -131,7 +131,11 @@ const LoginPage: React.FC<LoginPageProps> = ({ onBack, onSuccess, onSignup }) =>
               <p className="text-gray-600">
                 Don't have an account?{' '}
                 <button 
-                  onClick={() => window.location.href = '#signup'}
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onSignup?.();
+                  }}
                   className="text-light-blue-600 hover:text-light-blue-700 font-medium transition-colors duration-200 underline"
                 >
                   Sign up here
