@@ -8,6 +8,7 @@ export interface Subtask {
   parent_task_id: string
   user_id: string
   status: 'pending' | 'in-progress' | 'done'
+  order_index: number
   created_at: string
   updated_at: string
 }
@@ -31,7 +32,7 @@ export function useSubtasks(user: User | null, parentTaskId: string | null) {
         .select('*')
         .eq('user_id', user.id)
         .eq('parent_task_id', parentTaskId)
-        .order('created_at', { ascending: true })
+        .order('order_index', { ascending: true })
 
       if (error) throw error
       setSubtasks(data || [])
@@ -47,6 +48,19 @@ export function useSubtasks(user: User | null, parentTaskId: string | null) {
     if (!user) return { error: 'User not authenticated' }
 
     try {
+      // Get the highest order_index for this parent task
+      const { data: existingSubtasks } = await supabase
+        .from('subtasks')
+        .select('order_index')
+        .eq('parent_task_id', parentTaskId)
+        .eq('user_id', user.id)
+        .order('order_index', { ascending: false })
+        .limit(1)
+
+      const nextOrderIndex = existingSubtasks && existingSubtasks.length > 0 
+        ? existingSubtasks[0].order_index + 1 
+        : 0
+
       const { data, error } = await supabase
         .from('subtasks')
         .insert([
@@ -55,6 +69,7 @@ export function useSubtasks(user: User | null, parentTaskId: string | null) {
             parent_task_id: parentTaskId,
             user_id: user.id,
             status: 'pending' as const,
+            order_index: nextOrderIndex,
           },
         ])
         .select()
@@ -95,6 +110,30 @@ export function useSubtasks(user: User | null, parentTaskId: string | null) {
     }
   }
 
+  // Update subtask order
+  const updateSubtaskOrder = async (subtaskId: string, newOrderIndex: number) => {
+    if (!user) return { error: 'User not authenticated' }
+
+    try {
+      const { data, error } = await supabase
+        .from('subtasks')
+        .update({ order_index: newOrderIndex, updated_at: new Date().toISOString() })
+        .eq('id', subtaskId)
+        .eq('user_id', user.id)
+        .select()
+        .single()
+
+      if (error) throw error
+
+      setSubtasks(prev => prev.map(subtask => subtask.id === subtaskId ? data : subtask))
+      return { data, error: null }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update subtask order'
+      setError(errorMessage)
+      return { error: errorMessage }
+    }
+  }
+
   // Delete subtask
   const deleteSubtask = async (id: string) => {
     if (!user) return { error: 'User not authenticated' }
@@ -127,6 +166,7 @@ export function useSubtasks(user: User | null, parentTaskId: string | null) {
     error,
     addSubtask,
     updateSubtask,
+    updateSubtaskOrder,
     deleteSubtask,
     refetch: fetchSubtasks,
   }

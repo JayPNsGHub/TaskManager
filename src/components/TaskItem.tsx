@@ -161,12 +161,14 @@ function TaskItem({ task, user, onUpdate, onDelete }: TaskItemProps) {
       <SubtaskList taskId={task.id} user={user} />
       
       {/* AI Subtask Generator */}
-      <SubtaskGenerator 
-        taskTitle={task.title}
-        taskId={task.id}
-        user={user}
-        onSubtaskAdded={addSubtask}
-      />
+      {task.status !== 'done' && (
+        <SubtaskGenerator 
+          taskTitle={task.title}
+          taskId={task.id}
+          user={user}
+          onSubtaskAdded={addSubtask}
+        />
+      )}
     </div>
   )
 }
