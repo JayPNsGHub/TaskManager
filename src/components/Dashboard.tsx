@@ -82,6 +82,7 @@ function Dashboard({ onLogout, user }: DashboardProps) {
               <TaskItem
                 key={task.id}
                 task={task}
+                user={user}
                 onUpdate={updateTask}
                 onDelete={deleteTask}
               />

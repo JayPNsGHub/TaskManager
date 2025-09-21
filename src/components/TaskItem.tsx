@@ -1,9 +1,14 @@
 import React, { useState } from 'react'
 import { Task } from '../hooks/useTasks'
+import { User } from '@supabase/supabase-js'
+import { useSubtasks } from '../hooks/useSubtasks'
 import { Trash2, Edit3, Check, X } from 'lucide-react'
+import SubtaskGenerator from './SubtaskGenerator'
+import SubtaskList from './SubtaskList'
 
 interface TaskItemProps {
   task: Task
+  user: User | null
   onUpdate: (id: string, updates: Partial<Pick<Task, 'title' | 'priority' | 'status'>>) => Promise<{ error: string | null }>
   onDelete: (id: string) => Promise<{ error: string | null }>
 }
@@ -20,7 +25,8 @@ const statusColors = {
   done: 'bg-green-100 text-green-800 border-green-200',
 }
 
-function TaskItem({ task, onUpdate, onDelete }: TaskItemProps) {
+function TaskItem({ task, user, onUpdate, onDelete }: TaskItemProps) {
+  const { addSubtask } = useSubtasks(user, task.id)
   const [isEditing, setIsEditing] = useState(false)
   const [editTitle, setEditTitle] = useState(task.title)
   const [editPriority, setEditPriority] = useState(task.priority)
@@ -150,6 +156,17 @@ function TaskItem({ task, onUpdate, onDelete }: TaskItemProps) {
           </button>
         </div>
       </div>
+      
+      {/* Subtasks Section */}
+      <SubtaskList taskId={task.id} user={user} />
+      
+      {/* AI Subtask Generator */}
+      <SubtaskGenerator 
+        taskTitle={task.title}
+        taskId={task.id}
+        user={user}
+        onSubtaskAdded={addSubtask}
+      />
     </div>
   )
 }
