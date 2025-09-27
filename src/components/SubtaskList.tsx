@@ -77,8 +77,8 @@ function SubtaskList({ taskId, user }: SubtaskListProps) {
       <h4 className="text-sm font-medium text-gray-700">Subtasks:</h4>
       <div className="space-y-2">
         {subtasks.map((subtask) => (
-          <div key={subtask.id} className="flex items-center gap-3 bg-gray-50 rounded-lg p-3">
-            <button
+          <div 
+            key={subtask.id} 
             className={`flex items-center gap-3 bg-gray-50 rounded-lg p-3 transition-all duration-200 ${
               draggedItem === subtask.id ? 'opacity-50' : ''
             } ${
@@ -88,11 +88,14 @@ function SubtaskList({ taskId, user }: SubtaskListProps) {
             onDragStart={(e) => handleDragStart(e, subtask.id)}
             onDragOver={(e) => handleDragOver(e, subtask.id)}
             onDragLeave={handleDragLeave}
+            onDrop={(e) => handleDrop(e, subtask.id)}
+            onDragEnd={handleDragEnd}
+          >
             <div className="flex-shrink-0 text-gray-400 cursor-grab active:cursor-grabbing">
               <GripVertical className="w-4 h-4" />
             </div>
-            onDrop={(e) => handleDrop(e, subtask.id)}
-            onDragEnd={handleDragEnd}
+            <button
+              onClick={() => toggleSubtaskStatus(subtask)}
               className="flex-shrink-0 text-gray-400 hover:text-light-blue-600 transition-colors duration-200"
             >
               {subtask.status === 'done' ? (
